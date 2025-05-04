@@ -32,4 +32,26 @@ public class Accommodation extends BaseTimeEntity {
     @Column(nullable = false)
     private String address;
 
+    public void update(String name, String description, String region, String address) {
+        this.name = name;
+        this.description = description;
+        this.region = region;
+        this.address = address;
+    }
+
+    @Builder
+    public Accommodation(Long id,
+                         User owner,
+                         String name,
+                         String description,
+                         String region,
+                         String address
+    ) {
+        this.id = id;
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.region = region;
+        this.address = address;
+    }
 }
