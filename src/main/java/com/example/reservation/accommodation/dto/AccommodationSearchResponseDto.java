@@ -13,19 +13,19 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class AccommodationSearchResponseDto {
-    private Long id;
+    private Long accommodationId;
     private String name;
     private String region;
     private List<RoomResponseDto> roomInfo;
 
     @Builder
     public AccommodationSearchResponseDto(
-        Long id,
+        Long accommodationId,
         String name,
         String region,
         List<RoomResponseDto> roomInfo
     ) {
-        this.id = id;
+        this.accommodationId = accommodationId;
         this.name = name;
         this.region = region;
         this.roomInfo = roomInfo;
@@ -36,7 +36,7 @@ public class AccommodationSearchResponseDto {
         List<Room> rooms
     ) {
         return AccommodationSearchResponseDto.builder()
-            .id(accommodation.getId())
+            .accommodationId(accommodation.getId())
             .name(accommodation.getName())
             .region(accommodation.getRegion())
             .roomInfo(rooms.stream()

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RoomResponseDto {
-    private Long id;
+    private Long roomId;
     private Long accommodationId;
     private String name;
     private int capacity;
@@ -20,7 +20,7 @@ public class RoomResponseDto {
 
     public static RoomResponseDto from(Room room) {
         return RoomResponseDto.builder()
-            .id(room.getId())
+            .roomId(room.getId())
             .name(room.getName())
             .accommodationId(room.getAccommodation().getId())
             .capacity(room.getCapacity())

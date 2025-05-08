@@ -1,16 +1,17 @@
-package com.example.reservation.room.repostitory;
+package com.example.reservation.accommodation.service;
 
 import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.accommodation.domain.AccommodationRepository;
 import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
+import com.example.reservation.accommodation.dto.AccommodationSearchResponseDto;
 import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationRepository;
 import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.room.domain.Room;
+import com.example.reservation.room.repostitory.RoomRepository;
 import com.example.reservation.user.domain.Role;
 import com.example.reservation.user.domain.User;
 import com.example.reservation.user.domain.UserRepository;
-import com.querydsl.core.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class RoomRepositoryImplTest {
+class AccommodationQueryServiceTest {
+
+    @Autowired
+    private AccommodationQueryService queryService;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -42,6 +45,7 @@ class RoomRepositoryImplTest {
 
     private User user;
     private User owner;
+    private Accommodation accommodation;
     private Room room1;
     private Room room2;
 
@@ -50,7 +54,7 @@ class RoomRepositoryImplTest {
         user = userRepository.save(User.builder()
             .email("testuser@example.com")
             .password("1234")
-            .name("테스터")
+            .name("테스터 유저")
             .phone("01012345678")
             .role(Role.USER)
             .build());
@@ -58,35 +62,34 @@ class RoomRepositoryImplTest {
         owner = userRepository.save(User.builder()
             .email("testowner@example.com")
             .password("1234")
-            .name("테스터")
+            .name("테스터 오너")
             .phone("01012345678")
-            .role(Role.OWNER)
+            .role(Role.USER)
             .build());
 
-        Accommodation acc = accommodationRepository.save(Accommodation.builder()
+        accommodation = accommodationRepository.save(Accommodation.builder()
             .owner(owner)
-            .name("테스트 숙소")
+            .name("테스트 호텔")
             .region("서울")
             .address("서울시 강남구")
             .build());
 
         room1 = roomRepository.save(Room.builder()
-            .accommodation(acc)
-            .name("101호")
+            .accommodation(accommodation)
+            .name("101")
             .capacity(2)
             .priceWeekday(100000)
             .priceWeekend(150000)
             .build());
 
         room2 = roomRepository.save(Room.builder()
-            .accommodation(acc)
-            .name("102호")
+            .accommodation(accommodation)
+            .name("102")
             .capacity(2)
             .priceWeekday(90000)
             .priceWeekend(140000)
             .build());
 
-        // room1 예약 생성
         reservationRepository.save(Reservation.builder()
             .user(user)
             .room(room1)
@@ -99,47 +102,24 @@ class RoomRepositoryImplTest {
     }
 
     @Test
-    void 조건에_맞는_예약가능한_객실조회_테스트() {
+    void 조건에_맞는_예약가능한_객실조회_및_dto_변환() {
         // given
-        LocalDate checkIn = LocalDate.of(2025, 5, 10);  // room1은 이 날 예약됨
-        LocalDate checkOut = LocalDate.of(2025, 5, 12);
-        int guestCount = 2;
-        String region = "서울";
-
         AccommodationSearchRequestDto requestDto = AccommodationSearchRequestDto.builder()
-            .region(region)
-            .guestCount(guestCount)
-            .checkinDate(checkIn)
-            .checkoutDate(checkOut)
+            .region("서울")
+            .guestCount(2)
+            .checkinDate(LocalDate.of(2025, 5, 10))
+            .checkoutDate(LocalDate.of(2025, 5, 12))
             .build();
+
         // when
-        List<Tuple> result = roomRepository.searchByConditions(requestDto);
+        List<AccommodationSearchResponseDto> result = queryService.searchAccommodations(requestDto);
 
         // then
         assertEquals(1, result.size());
-        assertEquals(room2.getId(), Objects.requireNonNull(result.get(0).get(0, Room.class)).getId());
+
+        AccommodationSearchResponseDto dto = result.get(0);
+        assertEquals(accommodation.getId(), dto.getAccommodationId());
+        assertEquals(1, dto.getRoomInfo().size());
+        assertEquals(room2.getId(), dto.getRoomInfo().get(0).getRoomId());
     }
-
-    @Test
-    void 숙소가_존재하지_않는_조건으로_조회_테스트() {
-        //given
-        LocalDate checkIn = LocalDate.of(2025, 5, 10);
-        LocalDate checkOut = LocalDate.of(2025, 5, 12);
-        int guestCount = 2;
-        String region = "부산"; // 숙소가 존재하지 않는 지역
-
-        AccommodationSearchRequestDto requestDto = AccommodationSearchRequestDto.builder()
-            .region(region)
-            .guestCount(guestCount)
-            .checkinDate(checkIn)
-            .checkoutDate(checkOut)
-            .build();
-
-        //when
-        List<Tuple> result = roomRepository.searchByConditions(requestDto);
-
-        //then
-        assertTrue(result.isEmpty());
-    }
-
 }
