@@ -3,7 +3,7 @@ package com.example.reservation.room.service;
 import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.accommodation.domain.AccommodationRepository;
 import com.example.reservation.room.domain.Room;
-import com.example.reservation.room.domain.RoomRepository;
+import com.example.reservation.room.repostitory.RoomRepository;
 import com.example.reservation.room.dto.RoomRequestDto;
 import com.example.reservation.room.dto.RoomResponseDto;
 import lombok.RequiredArgsConstructor;
