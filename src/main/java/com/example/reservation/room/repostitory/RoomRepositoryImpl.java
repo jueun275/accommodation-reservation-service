@@ -1,17 +1,18 @@
 package com.example.reservation.room.repostitory;
 
+import static com.querydsl.core.types.Projections.constructor;
+
 import com.example.reservation.accommodation.domain.QAccommodation;
+import com.example.reservation.accommodation.dto.AccommodationSearchProjectionDto;
+import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.example.reservation.reservation.domain.QReservation;
 import com.example.reservation.room.domain.QRoom;
-import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,7 +21,8 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Tuple> searchByConditions(AccommodationSearchRequestDto requestDto) {
+    public List<AccommodationSearchProjectionDto> searchByConditions(
+        AccommodationSearchRequestDto requestDto) {
         QRoom room = QRoom.room;
         QAccommodation acc = QAccommodation.accommodation;
         QReservation res = QReservation.reservation;
@@ -42,16 +44,26 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
                         .from(res)
                         .where(
                             res.checkinDate.lt(requestDto.getCheckoutDate().atStartOfDay())
-                                .and(res.checkoutDate.gt(requestDto.getCheckinDate().atStartOfDay()))
+                                .and(
+                                    res.checkoutDate.gt(requestDto.getCheckinDate().atStartOfDay()))
                         )
                 )
             );
         }
 
         return queryFactory
-            .select(room, acc)
+            .select(constructor(AccommodationSearchProjectionDto.class,
+                room.id,
+                room.name,
+                room.capacity,
+                room.priceWeekday,
+                room.priceWeekend,
+                acc.id,
+                acc.name,
+                acc.region
+            ))
             .from(room)
-            .join(room.accommodation, acc).fetchJoin()
+            .join(room.accommodation, acc)
             .where(builder)
             .fetch();
     }

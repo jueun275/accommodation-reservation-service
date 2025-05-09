@@ -1,7 +1,11 @@
 package com.example.reservation.room.repostitory;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.accommodation.domain.AccommodationRepository;
+import com.example.reservation.accommodation.dto.AccommodationSearchProjectionDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationRepository;
@@ -10,20 +14,14 @@ import com.example.reservation.room.domain.Room;
 import com.example.reservation.user.domain.Role;
 import com.example.reservation.user.domain.User;
 import com.example.reservation.user.domain.UserRepository;
-import com.querydsl.core.Tuple;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -113,11 +111,11 @@ class RoomRepositoryImplTest {
             .checkoutDate(checkOut)
             .build();
         // when
-        List<Tuple> result = roomRepository.searchByConditions(requestDto);
+        List<AccommodationSearchProjectionDto> result = roomRepository.searchByConditions(requestDto);
 
         // then
         assertEquals(1, result.size());
-        assertEquals(room2.getId(), Objects.requireNonNull(result.get(0).get(0, Room.class)).getId());
+        assertEquals(room2.getId(), result.get(0).getRoomId());
     }
 
     @Test
@@ -136,7 +134,7 @@ class RoomRepositoryImplTest {
             .build();
 
         //when
-        List<Tuple> result = roomRepository.searchByConditions(requestDto);
+        List<AccommodationSearchProjectionDto> result = roomRepository.searchByConditions(requestDto);
 
         //then
         assertTrue(result.isEmpty());

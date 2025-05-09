@@ -1,5 +1,6 @@
 package com.example.reservation.room.dto;
 
+import com.example.reservation.accommodation.dto.AccommodationSearchProjectionDto;
 import com.example.reservation.room.domain.Room;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,15 @@ public class RoomResponseDto {
             .capacity(room.getCapacity())
             .priceWeekday(room.getPriceWeekday())
             .priceWeekend(room.getPriceWeekend())
+            .build();
+    }
+
+    public static RoomResponseDto fromProjection(AccommodationSearchProjectionDto dto) {
+        return RoomResponseDto.builder()
+            .roomId(dto.getRoomId())
+            .accommodationId(dto.getAccommodationId())
+            .name(dto.getRoomName())
+            .capacity(dto.getCapacity())
             .build();
     }
 }

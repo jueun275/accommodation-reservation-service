@@ -1,6 +1,7 @@
 package com.example.reservation.accommodation.service;
 
 import com.example.reservation.accommodation.domain.Accommodation;
+import com.example.reservation.accommodation.dto.AccommodationSearchProjectionDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchResponseDto;
 import com.example.reservation.room.domain.Room;
@@ -18,19 +19,17 @@ import java.util.stream.Collectors;
 public class AccommodationQueryService {
     private final RoomRepository roomRepository;
 
-    public List<AccommodationSearchResponseDto> searchAccommodations(AccommodationSearchRequestDto request) {
-        List<Tuple> results = roomRepository.searchByConditions(request);
+  public List<AccommodationSearchResponseDto> searchAccommodations(AccommodationSearchRequestDto request) {
+    List<AccommodationSearchProjectionDto> flatList = roomRepository.searchByConditions(request);
 
-        Map<Accommodation, List<Room>> grouping = results.stream()
-            .collect(Collectors.groupingBy(
-                tuple -> tuple.get(1, Accommodation.class),
-                Collectors.mapping(t -> t.get(0, Room.class), Collectors.toList())
-            ));
+    Map<Long, List<AccommodationSearchProjectionDto>> groupedByAccommodation =
+        flatList.stream().collect(Collectors.groupingBy(AccommodationSearchProjectionDto::getAccommodationId));
 
-        return grouping.entrySet().stream()
-            .map(entry -> AccommodationSearchResponseDto.from(
-                entry.getKey(),
-                entry.getValue()
-            )).collect(Collectors.toList());
-    }
+    return groupedByAccommodation.values().stream()
+        .map(roomList -> {
+          AccommodationSearchProjectionDto rep = roomList.get(0); // 대표값: 숙소 정보는 동일하므로 하나만 사용
+          return AccommodationSearchResponseDto.fromProjectionGroup(rep, roomList);
+        })
+        .collect(Collectors.toList());
+  }
 }
