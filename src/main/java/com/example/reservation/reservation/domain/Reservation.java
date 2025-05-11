@@ -5,6 +5,7 @@ import com.example.reservation.room.domain.Room;
 import com.example.reservation.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,4 +43,21 @@ public class Reservation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
+    @Builder
+    public Reservation(User user,
+                       Room room,
+                       LocalDateTime checkinDate,
+                       LocalDateTime checkoutDate,
+                       String guestCount,
+                       int totalPrice,
+                       ReservationStatus status
+    ) {
+        this.user = user;
+        this.room = room;
+        this.checkinDate = checkinDate;
+        this.checkoutDate = checkoutDate;
+        this.guestCount = guestCount;
+        this.totalPrice = totalPrice;
+        this.status = status;
+    }
 }
