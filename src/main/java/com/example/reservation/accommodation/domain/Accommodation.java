@@ -13,45 +13,45 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Accommodation extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "owner_id", nullable = false)
+  private User owner;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    private String description;
+  private String description;
 
-    @Column(nullable = false)
-    private String region;
+  @Column(nullable = false)
+  private String region;
 
-    @Column(nullable = false)
-    private String address;
+  @Column(nullable = false)
+  private String address;
 
-    public void update(String name, String description, String region, String address) {
-        this.name = name;
-        this.description = description;
-        this.region = region;
-        this.address = address;
-    }
+  public void update(String name, String description, String region, String address) {
+    this.name = name;
+    this.description = description;
+    this.region = region;
+    this.address = address;
+  }
 
-    @Builder
-    public Accommodation(Long id,
-                         User owner,
-                         String name,
-                         String description,
-                         String region,
-                         String address
-    ) {
-        this.id = id;
-        this.owner = owner;
-        this.name = name;
-        this.description = description;
-        this.region = region;
-        this.address = address;
-    }
+  @Builder
+  public Accommodation(Long id,
+      User owner,
+      String name,
+      String description,
+      String region,
+      String address
+  ) {
+    this.id = id;
+    this.owner = owner;
+    this.name = name;
+    this.description = description;
+    this.region = region;
+    this.address = address;
+  }
 }

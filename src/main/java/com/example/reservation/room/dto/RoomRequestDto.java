@@ -12,19 +12,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class RoomRequestDto {
-    private Long accommodationId;
-    private String name;
-    private int capacity;
-    private int priceWeekday;
-    private int priceWeekend;
 
-    public Room toEntity(Accommodation accommodation) {
-        return Room.builder()
-            .accommodation(accommodation)
-            .capacity(capacity)
-            .name(name)
-            .priceWeekday(priceWeekday)
-            .priceWeekend(priceWeekend)
-            .build();
-    }
+  private Long accommodationId;
+  private String name;
+  private int capacity;
+  private int priceWeekday;
+  private int priceWeekend;
+
+  public Room toEntity(Accommodation accommodation) {
+    return Room.builder()
+        .accommodation(accommodation)
+        .capacity(capacity)
+        .name(name)
+        .priceWeekday(priceWeekday)
+        .priceWeekend(priceWeekend)
+        .build();
+  }
 }

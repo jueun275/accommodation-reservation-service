@@ -12,20 +12,21 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class AccommodationRequestDto {
-    private Long ownerId;
-    private String name;
-    private String description;
-    private String region;
-    private String address;
 
-    public Accommodation toEntity(User owner) {
-        return Accommodation.builder()
-            .owner(owner)
-            .name(name)
-            .description(description)
-            .region(region)
-            .address(address)
-            .build();
-    }
+  private Long ownerId;
+  private String name;
+  private String description;
+  private String region;
+  private String address;
+
+  public Accommodation toEntity(User owner) {
+    return Accommodation.builder()
+        .owner(owner)
+        .name(name)
+        .description(description)
+        .region(region)
+        .address(address)
+        .build();
+  }
 }
 

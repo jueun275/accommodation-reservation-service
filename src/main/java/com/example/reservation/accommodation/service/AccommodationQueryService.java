@@ -1,29 +1,28 @@
 package com.example.reservation.accommodation.service;
 
-import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.accommodation.dto.AccommodationSearchProjectionDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchResponseDto;
-import com.example.reservation.room.domain.Room;
 import com.example.reservation.room.repostitory.RoomRepository;
-import com.querydsl.core.Tuple;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AccommodationQueryService {
-    private final RoomRepository roomRepository;
 
-  public List<AccommodationSearchResponseDto> searchAccommodations(AccommodationSearchRequestDto request) {
+  private final RoomRepository roomRepository;
+
+  public List<AccommodationSearchResponseDto> searchAccommodations(
+      AccommodationSearchRequestDto request) {
     List<AccommodationSearchProjectionDto> flatList = roomRepository.searchByConditions(request);
 
     Map<Long, List<AccommodationSearchProjectionDto>> groupedByAccommodation =
-        flatList.stream().collect(Collectors.groupingBy(AccommodationSearchProjectionDto::getAccommodationId));
+        flatList.stream()
+            .collect(Collectors.groupingBy(AccommodationSearchProjectionDto::getAccommodationId));
 
     return groupedByAccommodation.values().stream()
         .map(roomList -> {

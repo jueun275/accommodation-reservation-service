@@ -14,33 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AccommodationService {
 
-    private final AccommodationRepository accommodationRepository;
-    private final UserRepository userRepository;
+  private final AccommodationRepository accommodationRepository;
+  private final UserRepository userRepository;
 
-    @Transactional
-    public Long registerAccommodation(AccommodationRequestDto dto) {
-        User owner = userRepository.findById(dto.getOwnerId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-        Accommodation accommodation = dto.toEntity(owner);
-        return accommodationRepository.save(accommodation).getId();
-    }
+  @Transactional
+  public Long registerAccommodation(AccommodationRequestDto dto) {
+    User owner = userRepository.findById(dto.getOwnerId())
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+    Accommodation accommodation = dto.toEntity(owner);
+    return accommodationRepository.save(accommodation).getId();
+  }
 
-    @Transactional
-    public void updateAccommodation(Long id, AccommodationRequestDto dto) {
-        Accommodation accommodation = accommodationRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 숙소가 존재하지 않습니다."));
-        accommodation.update(dto.getName(), dto.getDescription(), dto.getRegion(), dto.getAddress());
-    }
+  @Transactional
+  public void updateAccommodation(Long id, AccommodationRequestDto dto) {
+    Accommodation accommodation = accommodationRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("해당 숙소가 존재하지 않습니다."));
+    accommodation.update(dto.getName(), dto.getDescription(), dto.getRegion(), dto.getAddress());
+  }
 
-    @Transactional(readOnly = true)
-    public AccommodationResponseDto getAccommodation(Long id) {
-        Accommodation accommodation = accommodationRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 숙소가 존재하지 않습니다."));
-        return AccommodationResponseDto.from(accommodation);
-    }
+  @Transactional(readOnly = true)
+  public AccommodationResponseDto getAccommodation(Long id) {
+    Accommodation accommodation = accommodationRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("해당 숙소가 존재하지 않습니다."));
+    return AccommodationResponseDto.from(accommodation);
+  }
 
-    @Transactional
-    public void deleteAccommodation(Long id) {
-        accommodationRepository.deleteById(id);
-    }
+  @Transactional
+  public void deleteAccommodation(Long id) {
+    accommodationRepository.deleteById(id);
+  }
 }
