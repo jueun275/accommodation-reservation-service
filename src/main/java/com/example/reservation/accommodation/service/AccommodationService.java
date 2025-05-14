@@ -29,7 +29,8 @@ public class AccommodationService {
   public void updateAccommodation(Long id, AccommodationRequestDto dto) {
     Accommodation accommodation = accommodationRepository.findById(id)
         .orElseThrow(() -> new IllegalArgumentException("해당 숙소가 존재하지 않습니다."));
-    accommodation.update(dto.getName(), dto.getDescription(), dto.getRegion(), dto.getAddress());
+    accommodation.update(
+        dto.getName(), dto.getDescription(), dto.getRegion(), dto.getAddress(), dto.getCheckinTime(), dto.getCheckoutTime());
   }
 
   @Transactional(readOnly = true)
