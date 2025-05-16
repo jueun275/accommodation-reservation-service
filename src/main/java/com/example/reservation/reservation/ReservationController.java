@@ -1,5 +1,6 @@
 package com.example.reservation.reservation;
 
+import com.example.reservation.global.aop.ReservationLock;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
 import com.example.reservation.reservation.dto.ReservationResponseDto;
 import com.example.reservation.reservation.service.ReservationService;
@@ -19,6 +20,7 @@ public class ReservationController {
   private final ReservationService reservationService;
 
   @PostMapping
+  @ReservationLock
   public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto requestDto) {
     ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
     return ResponseEntity.ok(responseDto);
