@@ -1,6 +1,10 @@
 package com.example.reservation.reservation.service;
 
 import com.example.reservation.accommodation.domain.Accommodation;
+import com.example.reservation.global.aop.ReservationLock;
+import com.example.reservation.payment.domain.Payment;
+import com.example.reservation.payment.domain.PaymentRepository;
+import com.example.reservation.payment.domain.PaymentState;
 import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
@@ -24,6 +28,7 @@ public class ReservationService {
   private final UserRepository userRepository;
   private final RoomRepository roomRepository;
   private final ReservationRepository reservationRepository;
+  private final PaymentRepository paymentRepository;
 
   @Transactional
   public ReservationResponseDto createReservation(ReservationRequestDto request) {
@@ -39,18 +44,29 @@ public class ReservationService {
 
     int totalPrice = calculateTotalPrice(room, request.getCheckinDate(), request.getCheckoutDate());
 
+    Reservation reservation = reservationRepository.save(
+        Reservation.builder()
+            .user(user)
+            .room(room)
+            .checkinDate(request.getCheckinDate())
+            .checkoutDate(request.getCheckoutDate())
+            .guestCount(request.getGuestCount())
+            .totalPrice(totalPrice)
+            .status(ReservationStatus.RESERVED)
+            .build()
+    );
+
+    // 결제 정보 저장
+    paymentRepository.save(Payment.builder()
+        .reservation(reservation)
+        .amount(totalPrice)
+        .state(PaymentState.PAID)
+        .paymentAt(LocalDateTime.now())
+        .build());
+
+
     return ReservationResponseDto.from(
-        reservationRepository.save(
-            Reservation.builder()
-                .user(user)
-                .room(room)
-                .checkinDate(request.getCheckinDate())
-                .checkoutDate(request.getCheckoutDate())
-                .guestCount(request.getGuestCount())
-                .totalPrice(totalPrice)
-                .status(ReservationStatus.RESERVED)
-                .build()
-        ),
+        reservation,
         accommodation.getCheckinTime(),
         accommodation.getCheckoutTime()
     );
