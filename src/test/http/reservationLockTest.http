@@ -1,0 +1,58 @@
+### Reservation Lock 테스트
+# 테스트 목적: 분산 락이 정상적으로 작동하는지 확인
+# ReservationLock 의
+# global.aop.LockAopAspect.java 클래스에서 Thread.sleep(6000); 주석을 해제
+# 후 순차적으로 실행
+
+### 숙소 등록 (owner: id=2)
+POST http://localhost:8080/api/accommodations
+Content-Type: application/json
+
+{
+  "ownerId": 2,
+  "name": "강릉 바다뷰 펜션",
+  "description": "바다가 보이는 고급 펜션.",
+  "region": "강릉",
+  "address": "강원도 강릉시 강릉대로 123",
+  "checkinTime": "15:00",
+  "checkoutTime": "11:00"
+}
+
+
+###객실 등록
+POST http://localhost:8080/api/room
+Content-Type: application/json
+
+{
+  "accommodationId": 1,
+  "name": "오션뷰 트윈룸",
+  "capacity": 4,
+  "priceWeekday": 150000,
+  "priceWeekend": 200000
+}
+
+
+###예약 요청 1
+POST http://localhost:8080/api/reservation
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "roomId": 1,
+  "checkinDate": "2025-07-01",
+  "checkoutDate": "2025-07-03",
+  "guestCount": 2
+}
+
+
+### 4. 예약 요청 2
+POST http://localhost:8080/api/reservation
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "roomId": 1,
+  "checkinDate": "2025-07-01",
+  "checkoutDate": "2025-07-03",
+  "guestCount": 2
+}

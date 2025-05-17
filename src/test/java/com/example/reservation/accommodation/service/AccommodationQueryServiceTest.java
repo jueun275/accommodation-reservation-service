@@ -1,5 +1,7 @@
 package com.example.reservation.accommodation.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.accommodation.domain.AccommodationRepository;
 import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
@@ -12,17 +14,14 @@ import com.example.reservation.room.repostitory.RoomRepository;
 import com.example.reservation.user.domain.Role;
 import com.example.reservation.user.domain.User;
 import com.example.reservation.user.domain.UserRepository;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -72,6 +71,8 @@ class AccommodationQueryServiceTest {
             .name("테스트 호텔")
             .region("서울")
             .address("서울시 강남구")
+            .checkinTime(LocalTime.of(15, 0))
+            .checkoutTime(LocalTime.of(10, 0))
             .build());
 
         room1 = roomRepository.save(Room.builder()
@@ -93,9 +94,9 @@ class AccommodationQueryServiceTest {
         reservationRepository.save(Reservation.builder()
             .user(user)
             .room(room1)
-            .checkinDate(LocalDateTime.of(2025, 5, 10, 14, 0))
-            .checkoutDate(LocalDateTime.of(2025, 5, 12, 11, 0))
-            .guestCount("2")
+            .checkinDate(LocalDate.of(2025, 5, 10))
+            .checkoutDate(LocalDate.of(2025, 5, 12))
+            .guestCount(2)
             .totalPrice(200000)
             .status(ReservationStatus.RESERVED)
             .build());

@@ -39,13 +39,18 @@ public class RoomRepositoryImpl implements RoomRepositoryCustom {
 
     if (requestDto.getCheckinDate() != null && requestDto.getCheckoutDate() != null) {
       builder.and(room.id.notIn(JPAExpressions.select(res.room.id).from(res).where(
-          res.checkinDate.lt(requestDto.getCheckoutDate().atStartOfDay())
-              .and(res.checkoutDate.gt(requestDto.getCheckinDate().atStartOfDay())))));
+          res.checkinDate.lt(requestDto.getCheckoutDate())
+              .and(res.checkoutDate.gt(requestDto.getCheckinDate())))));
     }
 
+    // AccommodationSearchProjectionDto 반환하는 쿼리
     return queryFactory.select(
-            constructor(AccommodationSearchProjectionDto.class, room.id, room.name, room.capacity,
-                room.priceWeekday, room.priceWeekend, acc.id, acc.name, acc.region)).from(room)
-        .join(room.accommodation, acc).where(builder).fetch();
+            constructor(AccommodationSearchProjectionDto.class,
+                room.id, room.name, room.capacity, room.priceWeekday, room.priceWeekend,
+                acc.id, acc.name, acc.region, acc.checkinTime, acc.checkoutTime)) // checkinTime과 checkoutTime 추가
+        .from(room)
+        .join(room.accommodation, acc)
+        .where(builder)
+        .fetch();
   }
 }

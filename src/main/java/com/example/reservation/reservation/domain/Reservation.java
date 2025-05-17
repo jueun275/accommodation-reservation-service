@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,13 +38,13 @@ public class Reservation extends BaseTimeEntity {
   private Room room;
 
   @Column(nullable = false)
-  private LocalDateTime checkinDate;
+  private LocalDate checkinDate;
 
   @Column(nullable = false)
-  private LocalDateTime checkoutDate;
+  private LocalDate checkoutDate;
 
   @Column(nullable = false)
-  private String guestCount;
+  private int guestCount;
 
   @Column(nullable = false)
   private int totalPrice;
@@ -54,9 +55,9 @@ public class Reservation extends BaseTimeEntity {
   @Builder
   public Reservation(User user,
       Room room,
-      LocalDateTime checkinDate,
-      LocalDateTime checkoutDate,
-      String guestCount,
+      LocalDate checkinDate,
+      LocalDate checkoutDate,
+      int guestCount,
       int totalPrice,
       ReservationStatus status
   ) {

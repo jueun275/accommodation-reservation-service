@@ -15,7 +15,7 @@ import com.example.reservation.user.domain.Role;
 import com.example.reservation.user.domain.User;
 import com.example.reservation.user.domain.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +66,8 @@ class RoomRepositoryImplTest {
             .name("테스트 숙소")
             .region("서울")
             .address("서울시 강남구")
+            .checkinTime(LocalTime.of(15, 0))
+            .checkoutTime(LocalTime.of(10, 0))
             .build());
 
         room1 = roomRepository.save(Room.builder()
@@ -88,9 +90,9 @@ class RoomRepositoryImplTest {
         reservationRepository.save(Reservation.builder()
             .user(user)
             .room(room1)
-            .checkinDate(LocalDateTime.of(2025, 5, 10, 14, 0))
-            .checkoutDate(LocalDateTime.of(2025, 5, 12, 11, 0))
-            .guestCount("2")
+            .checkinDate(LocalDate.of(2025, 5, 10))
+            .checkoutDate(LocalDate.of(2025, 5, 12))
+            .guestCount(2)
             .totalPrice(200000)
             .status(ReservationStatus.RESERVED)
             .build());

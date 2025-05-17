@@ -2,6 +2,7 @@ package com.example.reservation.accommodation.dto;
 
 import com.example.reservation.accommodation.domain.Accommodation;
 import com.example.reservation.user.domain.User;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,8 @@ public class AccommodationRequestDto {
   private String description;
   private String region;
   private String address;
+  private LocalTime checkinTime;
+  private LocalTime checkoutTime;
 
   public Accommodation toEntity(User owner) {
     return Accommodation.builder()
@@ -26,6 +29,8 @@ public class AccommodationRequestDto {
         .description(description)
         .region(region)
         .address(address)
+        .checkinTime(checkinTime)
+        .checkoutTime(checkoutTime)
         .build();
   }
 }
