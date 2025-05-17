@@ -1,15 +1,15 @@
 package com.example.reservation.reservation.service;
 
 import com.example.reservation.accommodation.domain.Accommodation;
-import com.example.reservation.global.aop.ReservationLock;
 import com.example.reservation.payment.domain.Payment;
 import com.example.reservation.payment.domain.PaymentRepository;
 import com.example.reservation.payment.domain.PaymentState;
 import com.example.reservation.reservation.domain.Reservation;
+import com.example.reservation.reservation.domain.ReservationRepository;
 import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
-import com.example.reservation.reservation.domain.ReservationRepository;
 import com.example.reservation.reservation.dto.ReservationResponseDto;
+import com.example.reservation.reservation.enums.PriceType;
 import com.example.reservation.room.domain.Room;
 import com.example.reservation.room.repostitory.RoomRepository;
 import com.example.reservation.user.domain.User;
@@ -17,6 +17,8 @@ import com.example.reservation.user.domain.UserRepository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +66,6 @@ public class ReservationService {
         .paymentAt(LocalDateTime.now())
         .build());
 
-
     return ReservationResponseDto.from(
         reservation,
         accommodation.getCheckinTime(),
@@ -73,17 +74,21 @@ public class ReservationService {
   }
 
   private int calculateTotalPrice(Room room, LocalDate checkin, LocalDate checkout) {
-    int totalPrice = 0;
+    Map<PriceType, Long> result = checkin.datesUntil(checkout)
+        .collect(Collectors.groupingBy(this::getPrice, Collectors.counting()));
 
-    while (checkin.isBefore(checkout)) {
-      DayOfWeek day = checkin.getDayOfWeek();
-      boolean isWeekend = (day == DayOfWeek.FRIDAY || day == DayOfWeek.SATURDAY); // 금,토 주말요금
+    int weekendCount = result.getOrDefault(PriceType.WEEKEND, 0L).intValue();
+    int weekdayCount = result.getOrDefault(PriceType.WEEKDAY, 0L).intValue();
 
-      totalPrice += isWeekend ? room.getPriceWeekend() : room.getPriceWeekday();
-      checkin = checkin.plusDays(1);
+    return (int) (room.getPriceWeekend() * weekendCount + room.getPriceWeekday() * weekdayCount);
+  }
+
+  private PriceType getPrice(LocalDate date) {
+    if (date.getDayOfWeek() == DayOfWeek.FRIDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY) {
+      return PriceType.WEEKEND;
+    } else {
+      return PriceType.WEEKDAY;
     }
-
-    return totalPrice;
   }
 
   private void validateReservationDate(Long roomId, LocalDate checkin, LocalDate checkout) {
