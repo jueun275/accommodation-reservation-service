@@ -69,4 +69,8 @@ public class Reservation extends BaseTimeEntity {
     this.totalPrice = totalPrice;
     this.status = status;
   }
+
+  public void cancel() {
+    this.status = ReservationStatus.CANCELLED;
+  }
 }

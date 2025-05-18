@@ -73,6 +73,19 @@ public class ReservationService {
     );
   }
 
+  @Transactional
+  public void cancelReservation(Long reservationId, Long userId) {
+    Reservation reservation = reservationRepository.findById(reservationId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+
+    if (!reservation.getUser().getId().equals(userId)) {
+      throw new IllegalStateException("본인의 예약만 취소할 수 있습니다.");
+    }
+
+    reservation.cancel();
+    paymentRepository.updatePaymentStateByReservationId(reservationId, PaymentState.CANCELLED);
+  }
+
   private int calculateTotalPrice(Room room, LocalDate checkin, LocalDate checkout) {
     Map<PriceType, Long> result = checkin.datesUntil(checkout)
         .collect(Collectors.groupingBy(this::getPrice, Collectors.counting()));

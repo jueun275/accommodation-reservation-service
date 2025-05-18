@@ -1,6 +1,7 @@
 package com.example.reservation.payment.domain;
 
 import com.example.reservation.reservation.domain.Reservation;
+import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,4 +38,8 @@ public class Payment {
   private PaymentState state;
 
   private LocalDateTime paymentAt;
+
+  public void cancel() {
+    this.state = PaymentState.CANCELLED;
+  }
 }
