@@ -1,5 +1,7 @@
 package com.example.reservation.global.aop;
 
+import java.util.List;
+
 public interface ReservationLockIdInterface {
-  String getLockKey();
+  List<String> getLockKeys();
 }

@@ -1,6 +1,7 @@
 package com.example.reservation.global.aop;
 
 import com.example.reservation.global.lock.LockService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,18 +18,22 @@ public class LockAopAspect {
   private final LockService lockService;
 
   @Around("@annotation(com.example.reservation.global.aop.ReservationLock) && args(request)")
-  public Object aroundMethod(
-      ProceedingJoinPoint joinPoint,
-      ReservationLockIdInterface request
-  ) throws Throwable {
-    lockService.lock(request.getLockKey());
+  public Object aroundMethod(ProceedingJoinPoint joinPoint, ReservationLockIdInterface request)
+      throws Throwable {
+
+    List<String> lockKeys = request.getLockKeys();
 
     try {
+      for (String lockKey : lockKeys) {
+        lockService.lock(lockKey);
+      }
       return joinPoint.proceed();
 
     } finally {
-
-      lockService.unlock(request.getLockKey());
+      // 락 해제는 역순으로 해줘햐 함!! (데드락 방지)
+      for (int i = lockKeys.size() - 1; i >= 0; i--) {
+        lockService.unlock(lockKeys.get(i));
+      }
     }
   }
 }
