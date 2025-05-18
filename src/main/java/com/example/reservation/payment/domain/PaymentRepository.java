@@ -10,5 +10,4 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
   Optional<Payment> findByReservation(Reservation reservation);
 
-  void updatePaymentStateByReservationId(Long reservationId, PaymentState paymentState);
 }

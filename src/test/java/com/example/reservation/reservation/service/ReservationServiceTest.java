@@ -53,7 +53,7 @@ class ReservationServiceTest {
   @BeforeEach
   void setUp() {
     user = userRepository.save(User.builder()
-        .email("testuser@example.com")
+        .username("testuser@example.com")
         .password("1234")
         .name("테스터 유저")
         .phone("01012345678")
@@ -61,7 +61,7 @@ class ReservationServiceTest {
         .build());
 
     owner = userRepository.save(User.builder()
-        .email("testowner@example.com")
+        .username("testowner@example.com")
         .password("1234")
         .name("테스터 오너")
         .phone("01012345678")

@@ -82,8 +82,11 @@ public class ReservationService {
       throw new IllegalStateException("본인의 예약만 취소할 수 있습니다.");
     }
 
+    Payment payment = paymentRepository.findByReservation(reservation)
+        .orElseThrow(() -> new IllegalStateException("존재하지 않는 결제입니다."));
+
     reservation.cancel();
-    paymentRepository.updatePaymentStateByReservationId(reservationId, PaymentState.CANCELLED);
+    payment.cancel();
   }
 
   private int calculateTotalPrice(Room room, LocalDate checkin, LocalDate checkout) {
