@@ -1,10 +1,13 @@
-package com.example.reservation.user.domain;
+package com.example.reservation.user;
 
+import com.example.reservation.global.security.LoginUser;
+import com.example.reservation.user.dto.UserResponse;
 import com.example.reservation.user.dto.UserSignUpRequest;
 import com.example.reservation.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,12 @@ public class UserController {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(userId);
+  }
+
+  @GetMapping
+  public void getUserInfo(@LoginUser Long userId) {
+    System.out.println(userId);
+
   }
 
 }

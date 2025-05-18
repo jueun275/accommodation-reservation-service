@@ -35,7 +35,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(antMatcher("/**/signup"), antMatcher("/**/login")).permitAll()
             .requestMatchers(HttpMethod.GET, "/api/accommodations/**").permitAll() // accommodations 조회
-            .anyRequest().authenticated());
+            .anyRequest().authenticated())
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

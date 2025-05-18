@@ -1,10 +1,15 @@
 package com.example.reservation.user.service;
 
+import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationRepository;
+import com.example.reservation.reservation.dto.ReservationResponseDto;
 import com.example.reservation.user.domain.Role;
 import com.example.reservation.user.domain.User;
 import com.example.reservation.user.domain.UserRepository;
+import com.example.reservation.user.dto.UserResponse;
 import com.example.reservation.user.dto.UserSignUpRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,5 +46,14 @@ public class UserService {
 
     return userRepository.save(user).getId();
   }
+  public UserResponse getUserInfo(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다"));
 
+    List<ReservationResponseDto> reservations = reservationRepository.findAllByUserId(userId).stream()
+        .map(ReservationResponseDto::from)
+        .toList();
+
+    return new UserResponse(user.getUsername(), user.getName(), user.getPhone(), reservations);
+  }
 }

@@ -11,7 +11,7 @@ import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationRepository;
 import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
-import com.example.reservation.reservation.dto.ReservationResponseDto;
+import com.example.reservation.reservation.dto.ReservationDetailResponseDto;
 import com.example.reservation.room.domain.Room;
 import com.example.reservation.room.repostitory.RoomRepository;
 import com.example.reservation.user.domain.Role;
@@ -110,7 +110,7 @@ class ReservationServiceTest {
         .build();
 
     // when
-    ReservationResponseDto response = reservationService.createReservation(request);
+    ReservationDetailResponseDto response = reservationService.createReservation(request);
 
     // then
     assertTrue(reservationRepository.findById(response.getReservationId()).isPresent());

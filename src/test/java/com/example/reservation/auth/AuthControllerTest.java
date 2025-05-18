@@ -80,5 +80,11 @@ class AuthControllerTest {
 
     // then
     assertThat(token).isNotBlank();
+
+    mockMvc.perform(get("/api/user")
+            .header("Authorization", "Bearer " + token))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("test@test.com"));
   }
 }

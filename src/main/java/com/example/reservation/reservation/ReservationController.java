@@ -2,10 +2,9 @@ package com.example.reservation.reservation;
 
 import com.example.reservation.global.aop.ReservationLock;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
-import com.example.reservation.reservation.dto.ReservationResponseDto;
+import com.example.reservation.reservation.dto.ReservationDetailResponseDto;
 import com.example.reservation.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +22,9 @@ public class ReservationController {
 
   @PostMapping
   @ReservationLock
-  public ResponseEntity<ReservationResponseDto> createReservation(
+  public ResponseEntity<ReservationDetailResponseDto> createReservation(
       @RequestBody ReservationRequestDto requestDto) {
-    ReservationResponseDto responseDto = reservationService.createReservation(requestDto);
+    ReservationDetailResponseDto responseDto = reservationService.createReservation(requestDto);
     return ResponseEntity.ok(responseDto);
   }
 

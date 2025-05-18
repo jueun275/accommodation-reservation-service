@@ -8,7 +8,7 @@ import com.example.reservation.reservation.domain.Reservation;
 import com.example.reservation.reservation.domain.ReservationRepository;
 import com.example.reservation.reservation.domain.ReservationStatus;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
-import com.example.reservation.reservation.dto.ReservationResponseDto;
+import com.example.reservation.reservation.dto.ReservationDetailResponseDto;
 import com.example.reservation.reservation.enums.PriceType;
 import com.example.reservation.room.domain.Room;
 import com.example.reservation.room.repostitory.RoomRepository;
@@ -33,7 +33,7 @@ public class ReservationService {
   private final PaymentRepository paymentRepository;
 
   @Transactional
-  public ReservationResponseDto createReservation(ReservationRequestDto request) {
+  public ReservationDetailResponseDto createReservation(ReservationRequestDto request) {
     User user = userRepository.findById(request.getUserId())
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -66,7 +66,7 @@ public class ReservationService {
         .paymentAt(LocalDateTime.now())
         .build());
 
-    return ReservationResponseDto.from(
+    return ReservationDetailResponseDto.from(
         reservation,
         accommodation.getCheckinTime(),
         accommodation.getCheckoutTime()

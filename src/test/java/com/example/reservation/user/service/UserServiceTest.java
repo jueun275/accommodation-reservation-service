@@ -34,6 +34,8 @@ class UserServiceTest {
 
     // then
     assertTrue(userRepository.findById(responseUserId).isPresent());
+    System.out.println(responseUserId);
+
   }
 
 }
