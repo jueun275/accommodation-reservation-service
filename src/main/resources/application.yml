@@ -28,3 +28,6 @@ spring:
   aop:
     auto: true
     proxy-target-class: true
+
+  jwt:
+    secret: anVldW4yNTctYWNjb21tb2RhdGlvbi1yZXNlcnZhdGlvbi1zZXJ2aWNl
