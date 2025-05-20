@@ -31,9 +31,9 @@ public class UserController {
   }
 
   @GetMapping
-  public void getUserInfo(@LoginUser Long userId) {
-    System.out.println(userId);
-
+  public ResponseEntity<UserResponse> getUserInfo(@LoginUser Long userId) {
+    UserResponse userResponse= userService.getUserInfo(userId);
+    return ResponseEntity.ok(userResponse);
   }
 
 }
