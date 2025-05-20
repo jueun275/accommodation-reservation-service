@@ -6,10 +6,12 @@ import com.example.reservation.accommodation.dto.AccommodationSearchRequestDto;
 import com.example.reservation.accommodation.dto.AccommodationSearchResponseDto;
 import com.example.reservation.accommodation.service.AccommodationQueryService;
 import com.example.reservation.accommodation.service.AccommodationService;
+import com.example.reservation.global.security.LoginUser;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,19 +30,21 @@ public class AccommodationController {
   private final AccommodationQueryService accommodationQueryService;
 
   // 숙소 등록
+  @PreAuthorize("hasRole('OWNER')")
   @PostMapping
   public ResponseEntity<Void> registerAccommodation(
-      @RequestBody AccommodationRequestDto requestDto) {
-    Long id = accommodationService.registerAccommodation(requestDto);
+      @RequestBody AccommodationRequestDto requestDto, @LoginUser Long ownerId) {
+    Long id = accommodationService.registerAccommodation(requestDto, ownerId);
     URI location = URI.create("/api/accommodations/" + id);
     return ResponseEntity.created(location).build();
   }
 
   // 숙소 수정
+  @PreAuthorize("hasRole('OWNER')")
   @PutMapping("/{id}")
   public ResponseEntity<Void> updateAccommodation(@PathVariable Long id,
-      @RequestBody AccommodationRequestDto requestDto) {
-    accommodationService.updateAccommodation(id, requestDto);
+      @RequestBody AccommodationRequestDto requestDto, @LoginUser Long ownerId) {
+    accommodationService.updateAccommodation(id, requestDto, ownerId);
     return ResponseEntity.noContent().build();
   }
 
@@ -59,9 +63,10 @@ public class AccommodationController {
   }
 
   // 숙소 삭제
+  @PreAuthorize("hasRole('OWNER')")
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id) {
-    accommodationService.deleteAccommodation(id);
+  public ResponseEntity<Void> deleteAccommodation(@PathVariable Long id, @LoginUser Long ownerId) {
+    accommodationService.deleteAccommodation(id, ownerId);
     return ResponseEntity.noContent().build();
   }
 }

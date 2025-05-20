@@ -33,8 +33,8 @@ public class ReservationService {
   private final PaymentRepository paymentRepository;
 
   @Transactional
-  public ReservationDetailResponseDto createReservation(ReservationRequestDto request) {
-    User user = userRepository.findById(request.getUserId())
+  public ReservationDetailResponseDto createReservation(ReservationRequestDto request, Long userId) {
+    User user = userRepository.findById(userId)
         .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
     Room room = roomRepository.findById(request.getRoomId())

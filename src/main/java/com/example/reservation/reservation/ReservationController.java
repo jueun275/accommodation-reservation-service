@@ -1,6 +1,7 @@
 package com.example.reservation.reservation;
 
 import com.example.reservation.global.aop.ReservationLock;
+import com.example.reservation.global.security.LoginUser;
 import com.example.reservation.reservation.dto.ReservationRequestDto;
 import com.example.reservation.reservation.dto.ReservationDetailResponseDto;
 import com.example.reservation.reservation.service.ReservationService;
@@ -23,14 +24,13 @@ public class ReservationController {
   @PostMapping
   @ReservationLock
   public ResponseEntity<ReservationDetailResponseDto> createReservation(
-      @RequestBody ReservationRequestDto requestDto) {
-    ReservationDetailResponseDto responseDto = reservationService.createReservation(requestDto);
+      @RequestBody ReservationRequestDto requestDto , @LoginUser Long userId) {
+    ReservationDetailResponseDto responseDto = reservationService.createReservation(requestDto, userId);
     return ResponseEntity.ok(responseDto);
   }
 
   @DeleteMapping("/{reservationId}")
-  public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId) {
-    long userId = 1;
+  public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId, @LoginUser Long userId) {
     reservationService.cancelReservation(reservationId, userId);
     return ResponseEntity.noContent().build();
   }

@@ -110,7 +110,7 @@ class ReservationServiceTest {
         .build();
 
     // when
-    ReservationDetailResponseDto response = reservationService.createReservation(request);
+    ReservationDetailResponseDto response = reservationService.createReservation(request, user.getId());
 
     // then
     assertTrue(reservationRepository.findById(response.getReservationId()).isPresent());
@@ -142,7 +142,7 @@ class ReservationServiceTest {
 
     // when then
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-        reservationService.createReservation(request)
+        reservationService.createReservation(request, user.getId())
     );
     assertEquals("체크아웃 날짜는 체크인 날짜 이후여야 합니다", exception.getMessage());
   }
@@ -171,7 +171,7 @@ class ReservationServiceTest {
 
     // when then
     IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
-        reservationService.createReservation(request)
+        reservationService.createReservation(request, user.getId())
     );
     System.out.println(exception.getMessage());
     assertEquals("해당 날짜에 예약이 이미 존재합니다.", exception.getMessage());
